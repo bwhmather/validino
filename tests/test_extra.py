@@ -21,7 +21,9 @@ def test_ip():
     v = V.ip('donkey')
     i = '192.168.1.243'
     assert v(i) == i
-    assert_invalid(lambda: v("this is not an ip"), 'donkey')
+    assert_invalid(
+        lambda: v("this is not an ip"),
+        {None: 'donkey'})
 
 
 def test_credit_card_1():
