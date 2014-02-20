@@ -23,6 +23,10 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         ],
     platforms='OS Independent',
+    tests_require=[
+        'nose',
+        'pytest',
+        ],
     packages=[
         'validino',
         ],
