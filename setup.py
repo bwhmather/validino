@@ -1,37 +1,31 @@
-from setuptools import setup, Extension
-
-description="A simple validation framework"
-long_description="""
+# -*- coding: utf-8 -*-
+"""
 Validino is a simple validation framework with a functional
 syntax.
 """
-platforms="OS Independent"
+from setuptools import setup
 
-keywords=["validation", "forms"]
-classifiers=filter(None, """
-Development Status :: 4 - Beta
-Intended Audience :: Developers
-Operating System :: OS Independent
-Programming Language :: Python
-Topic :: Software Development :: Libraries :: Python Modules
-""".split('\n'))
 
-__data__ = dict(
-    author='Jacob Smullyan',
-    author_email='jsmullyan@gmail.com',
-    url='http://code.google.com/p/validino',
-    description=description,
-    long_description=long_description,
-    keywords=keywords,
-    platforms=platforms,
-    license='MIT',
+setup(
     name='validino',
     version='0.3',
-    zip_safe=True,
+    license='MIT',
+    author='Jacob Smullyan',
+    author_email='jsmullyan@gmail.com',
+    url='https://github.com/bwhmather/validino',
+    description='A simple validation framework',
+    long_description=__doc__,
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        ],
+    platforms='OS Independent',
+    packages=[
+        'validino',
+        ],
     include_package_data=True,
-    packages=['validino'],
-    package_dir={'' : 'src'},
-    test_suite='nose.collector')
-
-if __name__ == '__main__':
-    setup(**__data__)
+    test_suite='nose.collector',
+    )
