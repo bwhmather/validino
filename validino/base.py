@@ -57,6 +57,7 @@ __all__ = [
 
 _default = object()
 
+
 def _add_error_message(d, k, msg):
     """
     internal utility for adding an error message to a
@@ -136,7 +137,8 @@ class Invalid(Exception):
     def _unpack_error(self, name, error):
         if isinstance(error, dict):
             result = dict(
-                [self._unpack_error(key, value) for (key, value) in error.iteritems()])
+                [self._unpack_error(key, value)
+                 for (key, value) in error.iteritems()])
         elif isinstance(error, (list, tuple)):
             name, result = self._unpack_error(name, error[0])
         elif isinstance(error, Invalid):
@@ -232,18 +234,22 @@ class Schema(object):
             schemakeys = self._keys()
             if not self.allow_extra:
                 if inputkeys.difference(schemakeys):
-                    m = _msg(self.msg, 'schema.extra', 'extra keys in input')
+                    m = _msg(self.msg,
+                             'schema.extra',
+                             'extra keys in input')
                     raise Invalid(m)
             if not self.allow_missing:
                 if schemakeys.difference(inputkeys):
-                    m = _msg(self.msg, 'schema.missing', 'missing keys in input')
+                    m = _msg(self.msg,
+                             'schema.missing',
+                             'missing keys in input')
                     raise Invalid(m)
 
         for k in sorted(self.subvalidators):
             vfunc = self.subvalidators[k]
             if isinstance(vfunc, (list, tuple)):
                 vfunc = all_of(*vfunc)
-            have_plural = isinstance(k, (list,tuple))
+            have_plural = isinstance(k, (list, tuple))
             if have_plural:
                 vdata = tuple(result.get(x, data.get(x)) for x in k)
             else:
@@ -263,7 +269,7 @@ class Schema(object):
                     result[k] = tmp
 
         if exceptions:
-            if not exceptions.has_key(None):
+            if None not in exceptions:
                 m = _msg(self.msg, "schema.error",
                          "Problems were found in the submitted data.")
                 exceptions[None] = m
@@ -507,7 +513,7 @@ def empty(msg=None):
 def not_empty(msg=None):
     @functools.wraps(not_empty)
     def f(value, context=None):
-        if value != '' and value != None:
+        if value != '' and value is not None:
             return value
         raise Invalid(_msg(msg, 'notempty', "A non-empty value was expected"))
     return f
@@ -550,9 +556,11 @@ def clamp_length(min=None, max=None, msg=None):
         vlen = len(value)
         msg_context = dict(min=min, max=max, length=vlen)
         if min is not None and vlen < min:
-            raise Invalid(_msg(msg, "minlen", "too short", msg_context=msg_context))
+            raise Invalid(_msg(msg, "minlen", "too short",
+                               msg_context=msg_context))
         if max is not None and vlen > max:
-            raise Invalid(_msg(msg, "maxlen", "too long", msg_context=msg_context))
+            raise Invalid(_msg(msg, "maxlen", "too long",
+                               msg_context=msg_context))
         return value
     return f
 
@@ -687,6 +695,7 @@ def to_boolean(msg=None, fuzzy=False):
     """
     true_strings = ['true', 't', 'y', 'yes']
     false_strings = ['false', 'f', 'n', 'no']
+
     @functools.wraps(to_boolean)
     def f(value, context=None):
         if fuzzy and isinstance(value, basestring):

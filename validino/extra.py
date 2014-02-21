@@ -7,7 +7,7 @@ Some validators commonly used in web applications.
 import httplib
 import re
 import socket
-import urlparse
+from urlparse import urlparse, urlunparse
 
 from validino.base import Invalid, _msg, regex
 import validino.ccvalidate as _cc
@@ -36,7 +36,8 @@ __all__ = [
 
 def email(check_dns=False, msg=None):
     if check_dns and DNS is None:
-        raise RuntimeError, "pyDNS not installed, cannot check DNS"
+        raise RuntimeError("pyDNS not installed, cannot check DNS")
+
     def f(value):
         try:
             username, domain = value.split('@', 1)
@@ -71,6 +72,7 @@ def email(check_dns=False, msg=None):
     f.msg = msg
     return f
 
+
 def credit_card(types=None,
                 require_type=False,
                 msg=None,
@@ -90,13 +92,13 @@ def credit_card(types=None,
 
         if f.require_type and cc_type is None:
             m = _msg(f.msg,
-                   "credit_card.require_type",
-                   "no credit card type specified")
+                     "credit_card.require_type",
+                     "no credit card type specified")
             exc.add_error_message(f.cc_type_field, m)
         elif not (cc_type is None) and cc_type not in f.types:
             m = _msg(f.msg,
-                   "credit_card.type_check",
-                   "unrecognized credit card type")
+                     "credit_card.type_check",
+                     "unrecognized credit card type")
             exc.add_error_message(f.cc_type_field, m)
         else:
             type_ok = True
@@ -108,8 +110,8 @@ def credit_card(types=None,
                 _cc.check_credit_card(cardnumber)
         except _cc.CreditCardValidationException:
             m = _msg(f.msg,
-                   "credit_card.invalid",
-                   "invalid credit card number")
+                     "credit_card.invalid",
+                     "invalid credit card number")
             exc.add_error_message(f.cc_field, m)
 
         if exc.errors:
@@ -130,6 +132,7 @@ ip.__doc__ = """
 Returns a validator that tests whether an ip address is properly formed.
 """
 
+
 def url(check_exists=False,
         schemas=('http', 'https'),
         default_schema='http',
@@ -140,7 +143,7 @@ def url(check_exists=False,
         if f.check_exists and set(f.schemas).difference(set(('http', 'https'))):
             m = "existence check not supported for schemas other than http and https"
             raise RuntimeError(m)
-        schema, netloc, path, params, query, fragment = urlparse.urlparse(value)
+        schema, netloc, path, params, query, fragment = urlparse(value)
         if schema not in f.schemas:
             raise Invalid(_msg(f.msg,
                                "url.schema",
@@ -150,9 +153,9 @@ def url(check_exists=False,
         if netloc == '' and f.default_host:
             netloc = f.default_host
 
-        url = urlparse.urlunparse((schema, netloc, path, params, query, fragment))
+        url = urlunparse((schema, netloc, path, params, query, fragment))
         if f.check_exists:
-            newpath = urlparse.urlunparse(('', '', path, params, query, fragment))
+            newpath = urlunparse(('', '', path, params, query, fragment))
             if schema == 'http':
                 conn = httplib.HTTPConnection
             elif schema == 'https':
