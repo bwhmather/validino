@@ -30,8 +30,8 @@ def test_credit_card_1():
     cc = '4000000000998'
     v = V.credit_card(msg="aha")
     assert v(cc) == cc
-    assert_invalid(lambda: v('pain chocolat'), dict(cc_number=['aha']))
-    assert_invalid(lambda: v(str(int(cc)-1)), dict(cc_number=['aha']))
+    assert_invalid(lambda: v('pain chocolat'), dict(cc_number='aha'))
+    assert_invalid(lambda: v(str(int(cc)-1)), dict(cc_number='aha'))
     v = V.credit_card(require_type=True,  msg='aha')
     assert v((cc, 'Visa')) == (cc, 'Visa')
 
