@@ -38,7 +38,7 @@ def email(check_dns=False, msg=None):
     if check_dns and DNS is None:
         raise RuntimeError("pyDNS not installed, cannot check DNS")
 
-    def f(value):
+    def f(value, context=None):
         try:
             username, domain = value.split('@', 1)
         except ValueError:
@@ -81,7 +81,7 @@ def credit_card(types=None,
     if types is None:
         types = _cc.cards
 
-    def f(values):
+    def f(values, context=None):
         if isinstance(values, (list, tuple)):
             cardnumber, cc_type = values
         else:
@@ -139,7 +139,7 @@ def url(check_exists=False,
         default_host='',
         msg=None):
 
-    def f(value):
+    def f(value, context=None):
         if f.check_exists and set(f.schemas).difference(set(('http', 'https'))):
             m = "existence check not supported for schemas other than http and https"
             raise RuntimeError(m)
