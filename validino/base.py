@@ -130,6 +130,9 @@ class Invalid(Exception):
         Exception.__init__(self, errors)
         self.errors = errors
 
+    def add_error_message(self, key, message):
+        _add_error_message(self.errors, key, message)
+
     def _unpack_error(self, name, error):
         if isinstance(error, dict):
             result = dict(
